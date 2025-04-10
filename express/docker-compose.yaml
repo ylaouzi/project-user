@@ -1,0 +1,23 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    environment:
+      - DATABASE_URL=file:../db/database.sqlite
+    depends_on:
+      - sqlite3
+    restart: unless-stopped
+    command: sh -c "yarn install && yarn dev"  # This ensures nodemon is available
+
+  sqlite3:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./db/:/root/db/
